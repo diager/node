@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Registrierung</title>
+    <link rel="stylesheet" href="register.css" />
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+		<a href="https://de.wikipedia.org/wiki/Fr%C3%BChst%C3%BCck_bei_Tiffany_(Film)">
+			<img src="./images/audrey.jpeg" alt="Logo">
+		</a>
+        <h2>Registrierung</h2>
+      </div>
+      <form method="post" id="registerForm">
+        <div>
+          <label for="username">Benutzername:</label>
+          <input
+            type="text"
+            id="username"
+            name="username"
+            placeholder="Benutzername"
+            required
+          />
+        </div>
+        <div>
+          <label for="password">Passwort:</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            placeholder="Passwort"
+            required
+          />
+        </div>
+        <div>
+          <label for="password">Passwort Wiederholung:</label>
+          <input
+            type="password"
+            id="passwordRepeat"
+            name="passwordRepeat"
+            placeholder="Passwort (wiederholen)"
+            required
+          />
+        </div>
+		<div>
+			<button type="submit">Registrieren</button>
+		</div>
+		
+		<div class="login-link">
+			<a href="/login">Zum Login</a>
+
+
+        <% if (typeof error !== 'undefined') { %>
+          <p class="errorbox" id="errorbox"><%= error %></p>
+          <% } %>
+			
+		</form>
+      </div>
+    </div>
+    <script src="register.js"></script>
+  </body>
+</html>
+å

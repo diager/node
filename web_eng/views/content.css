@@ -1,0 +1,292 @@
+* {
+	box-sizing: border-box;
+}
+
+body {
+	margin: 0;
+	padding: 0;
+	background-color: #f7f7f7;
+	font-family: Arial, sans-serif;
+}
+
+.container {
+	margin: 10% auto;
+	max-width: 1000px;
+	background-color: #fff;
+	padding: 40px;
+	border-radius: 10px;
+	box-shadow: 0px 0px 10px #ccc;
+
+	display: flex;
+	flex-direction: column;
+
+	justify-content: space-between;
+	position: relative;
+
+}
+
+.content {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: flex-start;
+	flex: 1;
+}
+
+label {
+	display: block;
+	margin: 25px 0px 4px;
+	color: #555;
+}
+
+.header {
+	display: flex;
+	margin-bottom: 30px;
+}
+
+.header img {
+	margin-right: 10px;
+	height: 40px;
+}
+
+.container-header {
+	
+	display: flex;
+	flex-direction: row;
+}
+h2 {
+	color: #333;
+	margin: 0;
+	font-size: 28px;
+	flex-grow: 1;
+}
+
+.Logo {
+flex-grow: 2;
+background-color: #2196f3;
+}
+
+
+.login {
+	position: absolute;
+	top: 0;
+	right: 0;
+	color: #666;
+	font-size: 14px;
+
+	align-self: flex-start;
+	margin-right: 30px;
+	margin-top: 15px;
+}
+
+
+a {
+	color: #2196f3;
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+h3 {
+	color: #333;
+	margin-top: 0;
+}
+
+table {
+	border-collapse: collapse;
+	width: 100%;
+	margin-bottom: 40px;
+}
+
+th,
+td {
+	padding: 10px;
+	border: 1px solid #000;
+}
+
+th {
+	background-color: #c2ddf0;
+}
+
+.cat-image {
+	float: right;
+	max-width: 100%;
+	margin-left: 20px;
+	margin-bottom: 20px;
+}
+
+.login-info {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.login-info a {
+	margin-left: 10px;
+	padding: 5px 10px;
+	background-color: #2196f3;
+	color: #fff;
+	border-radius: 5px;
+	text-decoration: none;
+}
+
+.login-info a:hover {
+	background-color: #0e81ce;
+}
+
+
+* {
+	box-sizing: border-box;
+}
+
+button {
+	background-color: #2196f3;
+	color: #fff;
+	border: none;
+	border-radius: 5px;
+	margin-left: 5px;
+	margin-top: 10px;
+	
+	padding: 5px 10px;
+	font-size: 16px;
+
+	cursor: pointer;
+}
+
+button:hover {
+	background-color: #0e81ce;
+}
+
+
+#createCardBorder {
+	padding: 50px;
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.5);
+	z-index: 999;
+
+}
+
+
+#createCard {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	background-color: white;
+	border-radius: 20px;
+	padding: 3% 6%;
+	width: 40%;
+}
+
+#updateCard {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	background-color: white;
+	border-radius: 20px;
+	padding: 3% 6%;
+	width: 40%;
+}
+
+#updateCardBorder {
+	padding: 50px;
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.5);
+	z-index: 999;
+}
+
+#deleteWindowCardBorder{
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.5);
+	z-index: 999;
+}
+
+#deleteWindowCard {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	background-color: white;
+	border-radius: 20px;
+	padding: 2% 2%;
+	width: 35%;
+}
+
+input {
+	border-radius: 10px;
+}
+
+textarea {
+	resize: none;
+	width: 100%;
+	height: 150px;
+	padding: 10px;
+	border: 2px solid #ccc;
+	border-radius: 10px;
+	background-color: white;
+	font-size: 16px;
+	font-family: Arial, sans-serif;
+	color: #555;
+}
+
+#kuerzel {
+	height: 50px;
+}
+
+.grey:hover {
+	background-color: #ddd;
+  }
+
+.inner-container {
+	display: flex;
+	flex-direction: row;
+}
+
+.box {
+	background-color: #fff;
+	border: 1px solid #ccc;
+	border-radius: 15px;
+	padding: 20px;
+	margin: 100px 10px 40px 26px;
+
+	flex-grow: 1;
+	max-width: 30%;
+}
+
+.contentTable {
+	flex-grow: 2;
+}
+
+table #loeschen:hover {
+	background-color: rgb(255, 174, 174);
+}
+
+table #aendern:hover {
+	background-color: rgb(255, 174, 240);
+}
+
+#errorbox {
+	background-color: #f8d7da;
+	border: 1px solid #f5c6cb;
+	border-radius: 5px;
+	color: #721c24;
+	margin: 10px 0;
+	padding: 10px;
+	text-align: center;
+	display: none;
+  }

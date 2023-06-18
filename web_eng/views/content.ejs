@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Dianas Webapp</title>
+	<link rel="stylesheet" href="content.css">
+	<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+	<script src="contentJQuery.js"></script>
+</head>
+<body>
+	<div class="container">
+		<div class="content"></div>
+		<div class="header">
+			
+			
+			<a href="https://de.wikipedia.org/wiki/Fr%C3%BChst%C3%BCck_bei_Tiffany_(Film)">
+				<img src="./images/audrey.jpeg" alt="Logo">
+			</a>
+			<h2 style="margin-left: 10px;">Dianas Webapp</h2>
+		
+					<div class="login">
+						<% if (typeof username !== 'undefined') { %>
+						<p>Eingeloggt als:  <%= username %> <br>
+						<a href="/logout">Logout</a>
+					</p>
+					<% } %>
+					</div>
+			
+		</div>
+<div class="inner-container">
+		<div class="contentTable">
+		<h3>Übersicht über Themen zum Web Engineering</h3>
+		<div>
+			<button id="createNewButton" style="margin-bottom: 20px;">Create new</button>
+		  </div>
+		
+        
+    
+		<table>
+			<thead>
+				<tr>
+					<th>Kürzel</th>
+					<th>Thema</th>
+					<th></th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody>
+				<% if (typeof content !== 'undefined') { %>
+					
+					<% for (var i = 0; i < content.length; i++){ %>
+						<tr data-id="<%= content[i].themaID %>">
+							<td class="grey"><%= content[i].kuerzel%></td>
+							<td class="grey"><%= content[i].thema %></td>
+							<td id="aendern"><%= content[i].aendern %></td>
+							<td id="loeschen"><%= content[i].loeschen %></td>
+						</tr>
+						<% } %>
+						<% } %>
+				
+			</tbody>
+		</table>
+        </div>
+        <div class="textbox box">
+			<p id="textbox">
+			</div>
+			<% if (typeof text !== 'undefined') { %>
+				<p id="text_in_box"><%= text %></p>
+				<% } %>
+			</div>
+        </div>
+
+
+
+		
+		  <div id="createCardBorder" style="display: none;">
+			<div id="createCard">
+			  <h2>Thema anlegen</h2>
+			  <form id="themeForm" method="POST" action="/createTheme">
+
+				  <label for="kuerzel">Kürzel: </label>
+				  <textarea
+					type="text"
+					id="kuerzel"
+					name="kuerzel"
+					placeholder="Kürzel"
+					maxlength="8"
+					required
+				  ></textarea>
+				  <p id="errorbox" >Maximal 8 Zeichen erlaubt!</p>
+				  <label for="thema">Thema:</label>
+				  <textarea
+					type="text"
+					id="thema"
+					name="thema"
+					placeholder="Thema"
+					required
+				  ></textarea>
+				
+					<label for="text">Text: </label>
+					<textarea
+					  type="text"
+					  id="text"
+					  name="text"
+					  placeholder="Text"
+					  required
+					>
+				</textarea>
+				  
+		
+				<div style="padding-top: 20px;">
+				  	<button type="submit" id="createTheme">create</button>
+					<button id="closeCard">close</button>
+				</div>
+
+			  </form>
+			</div>
+			</div>
+			
+			
+			
+			
+			<!-- window: soll sicher gelöscht werden? -->
+			
+			<div id="deleteWindowCardBorder" style="display: none;">
+				<div id="deleteWindowCard">
+					<h3 style="margin-bottom: 30px;">Soll die Tabellenzeile sicher gelöscht werden?</h3>
+					
+
+					
+					<div >
+						<button id="deleteWindowButton">abbrechen</button>
+						<button id="deleteWindowCardButton">löschen</button>
+					</div>
+					
+					
+				</div>
+			</div>
+			
+			
+			
+			
+			<!--edit form-->
+			<div class="edit-form" style="display: none;">
+				<h2>Edit Row</h2>
+				<form>
+				  <label for="kuerzel-input">Kuerzel:</label>
+				  <input id="kuerzel-input" type="text" name="kuerzel">
+				  <label for="thema-input">Thema:</label>
+				  <input id="thema-input" type="text" name="thema">
+				  <label for="text-input">Text:</label>
+				  <textarea id="text-input" name="text"></textarea>
+				  <button id="update-button" type="button">Update</button>
+				  <button id="cancel-button" type="button">Cancel</button>
+				</form>
+			  </div>
+
+
+<!-- for updating -->
+			<div id="updateCardBorder" style="display: none;">
+				<div id="updateCard">
+				  <h2>Datensatz ändern</h2>
+				  
+					
+					  <label for="kuerzel">Kürzel: </label>
+					  <textarea
+						type="text"
+						id="kuerzelU"
+						name="kuerzel"
+						placeholder="Kürzel"
+						required
+					  ></textarea>
+					
+					  <label for="thema">Thema:</label>
+					  <textarea
+						type="text"
+						id="themaU"
+						name="thema"
+						placeholder="Thema"
+						required
+					  ></textarea>
+					
+						<label for="text">Text: </label>
+						<textarea
+						  type="text"
+						  id="textU"
+						  name="text"
+						  placeholder="Text"
+						  required
+						></textarea>
+					  
+			
+					<div style="padding-top: 20px;">
+						  <button id="updateForm">update</button>
+						<button id="closeUpdateCard">close</button>
+					</div>
+	
+				  
+				</div>
+				</div>
+
+
+<a href="index.html#section5">
+<button id="test1">Test1</button>
+</a>
+<p id="test">Wunderschöner Paragraph wie man sehen kann</p>	
+		</div>
+	  
+
+		<script src="content.js"></script>
+	
+</body>
+</html>
