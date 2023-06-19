@@ -12,8 +12,6 @@ const cookieParser = require("cookie-parser"); //middleware which parses cookies
 const sessions = require('express-session'); //session middleware
 const jwt = require('jsonwebtoken');
 
-//const secretKey = process.env.JWT_SECRET
-const secretKey = 'your_secret_key'
 
 //middleware function for req
 app.use(bodyParser.urlencoded({ extended: true })); //for form data of http requests
@@ -99,33 +97,18 @@ app.get('/register', (req, res) => {
     res.render('register', { error: "" });
 });
 
-app.get('/content', authenticateToken, async (req, res) => {
-    const token = req.query.token
-    if (token){
-        try {
-            const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
-            console.log("decoded:", decoded.name);
-            const user = decoded.name;
-            const sqlQuery = "SELECT * FROM contentTable"
+app.get('/content', async (req, res) => {
+    
+    const sqlQuery = "SELECT * FROM contentTable"
+    await connection.query(sqlQuery, async (err, result) => {
+        if (err) throw (err)
+        console.log("------> Search Results")
+        console.log(result)
+        
+        res.render('content', { username: "Diana", content: result });
+    })
 
-            await connection.query(sqlQuery, async (err, result) => {
-                if (err) throw (err)
-                console.log("------> Search Results")
-                console.log(result)
-
-                //res.render('content', { username: "Diana", content: result });
-                res.render('content', { user, content: result });
-            })
-            } catch (error) {
-                res.status(401).send('Invalid token');
-            }
-        } else {
-        res.status(400).send('Token not found');
-    }
-});
-
-
-
+})
 
 app.get('/logout', function (req, res) {
     req.session.destroy();
@@ -136,11 +119,11 @@ app.get('/logout', function (req, res) {
 })
 
 
-app.post('/login', function (req, res) {
+app.post('/login', function(req, res) {
     const { username, password } = req.body;
 
     // Check if the user exists
-    connection.query('SELECT * FROM userTable WHERE user = ?', [username], function (error, results) {
+    connection.query('SELECT * FROM userTable WHERE user = ?', [username], function(error, results) {
         if (error) {
             console.error('Error executing database query: ' + error.stack);
             res.json({ success: false, message: 'Ein Fehler ist aufgetreten.' });
@@ -155,7 +138,7 @@ app.post('/login', function (req, res) {
         const user = results[0];
 
         // Compare the password with the hashed password
-        bcrypt.compare(password, user.password, function (err, passwordMatch) {
+        bcrypt.compare(password, user.password, function(err, passwordMatch) {
             if (err) {
                 console.error('Error comparing passwords: ' + err.stack);
                 res.json({ success: false, message: 'Ein Fehler ist aufgetreten.' });
@@ -165,9 +148,9 @@ app.post('/login', function (req, res) {
             if (passwordMatch) {
                 const username = req.body.username;
                 const user = { name: username };
-                const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1000000' });
+                const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '10000' });
                 //res.json({ success: true }, { accessToken: accessToken });
-                console.log("Access Token " + accessToken)
+                console.log("Access Token" + accessToken)
                 res.status(200).json({ success: true, accessToken: accessToken });
 
                 //res.json({ success: true });
@@ -180,11 +163,11 @@ app.post('/login', function (req, res) {
 
 
 
-app.post('/register', function (req, res) {
+app.post('/register', function(req, res) {
     const { username, password } = req.body;
 
     // Check if the user already exists
-    connection.query('SELECT * FROM userTable WHERE user = ?', [username], function (error, results) {
+    connection.query('SELECT * FROM userTable WHERE user = ?', [username], function(error, results) {
         if (error) {
             console.error('Error executing database query: ' + error.stack);
             res.json({ success: false, message: 'Ein Fehler ist aufgetreten.' });
@@ -197,7 +180,7 @@ app.post('/register', function (req, res) {
         }
 
         // Hash the password
-        bcrypt.hash(password, 10, function (err, hash) {
+        bcrypt.hash(password, 10, function(err, hash) {
             if (err) {
                 console.error('Error hashing password: ' + err.stack);
                 res.json({ success: false, message: 'Ein Fehler ist aufgetreten.' });
@@ -205,15 +188,14 @@ app.post('/register', function (req, res) {
             }
 
             // Store the user in the database
-            connection.query('INSERT INTO userTable (user, password) VALUES (?, ?)', [username, hash], function (err, results) {
+            connection.query('INSERT INTO userTable (user, password) VALUES (?, ?)', [username, hash], function(err, results) {
                 if (err) {
                     console.error('Error executing database query: ' + err.stack);
                     res.json({ success: false, message: 'Ein Fehler ist aufgetreten.' });
                     return;
                 }
 
-                //res.json({ success: true });
-                res.status(200).json({ success: true, accessToken: accessToken });
+                res.json({ success: true });
             });
         });
     });

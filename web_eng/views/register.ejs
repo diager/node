@@ -5,14 +5,14 @@
     <title>Registrierung</title>
     <link rel="stylesheet" href="register.css" />
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-    
+    <script src="register.js"></script>
   </head>
   <body>
     <div class="container">
       <div class="header">
-		<a href="https://de.wikipedia.org/wiki/Fr%C3%BChst%C3%BCck_bei_Tiffany_(Film)">
-			<img src="./images/audrey.jpeg" alt="Logo">
-		</a>
+        <a href="https://de.wikipedia.org/wiki/Fr%C3%BChst%C3%BCck_bei_Tiffany_(Film)">
+          <img src="./images/audrey.jpeg" alt="Logo">
+        </a>
         <h2>Registrierung</h2>
       </div>
       <form method="post" id="registerForm">
@@ -46,22 +46,13 @@
             required
           />
         </div>
-		<div>
-			<button type="submit">Registrieren</button>
-		</div>
-		
-		<div class="login-link">
-			<a href="/login">Zum Login</a>
-
-
-        <% if (typeof error !== 'undefined') { %>
-          <p id="errorbox"><%= error %></p>
-          <% } %>
-			
-		</form>
+        <div>
+          <button type="submit">Registrieren</button>
+        </div>
+      </form>
+      <div class="login-link">
+        <a href="/login">Zum Login</a>
       </div>
     </div>
-    <script src="register.js"></script>
   </body>
 </html>
-å
