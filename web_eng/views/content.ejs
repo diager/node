@@ -17,14 +17,18 @@
 				<img src="./images/audrey.jpeg" alt="Logo">
 			</a>
 			<h2 style="margin-left: 10px;">Dianas Webapp</h2>
-		
-					<div class="login">
-						<% if (typeof username !== 'undefined') { %>
-						<p>Eingeloggt als:  <%= username %> <br>
-						<a href="/logout">Logout</a>
-					</p>
-					<% } %>
-					</div>
+
+			  
+
+
+			<div class="_login">
+				<% if (typeof user !== 'undefined') { %>
+				<p>Eingeloggt als:  <%= user %> <br>
+				<a href="/logout">Logout</a>
+			</p>
+			<% } %>
+			</div>
+
 			
 		</div>
 <div class="inner-container">

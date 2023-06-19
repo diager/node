@@ -1,32 +1,41 @@
-$(function () {
-  $('#registerForm').on('submit', function (event) {
-    event.preventDefault(); // Prevent the default form submission
+$(document).ready(function() {
+  $('#registerForm').submit(function(event) {
+      event.preventDefault();
 
-    if ($('#password').val() !== $('#passwordRepeat').val()) {
-     alert("Passwords don't match")
+      var username = $('#username').val();
+      var password = $('#password').val();
+      var passwordRepeat = $('#passwordRepeat').val();
 
-    }
-
-    const username = $('#username').val();
-    const password = $('#password').val();
-    const passwordRepeat = $('#passwordRepeat').val();
-
-    const registerData = {
-      username: username,
-      password: password,
-      passwordRepeat: passwordRepeat
-    };
-
-    $.ajax({
-      url: '/register',
-      type: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      data: JSON.stringify(registerData), // Use data instead of body
-      success: function (response) {
-        console.log('Registration successful:', response);
+      if (password !== passwordRepeat) {
+          alert("Passwörter stimmen nicht überein.");
+          return;
       }
-    });
+
+      $.ajax({
+          url: '/register',
+          method: 'POST',
+          data: {
+              username: username,
+              password: password
+          },
+          success: function(response) {
+              if (response.success) {
+                  alert("Registrierung erfolgreich!");
+                  localStorage.setItem("token", response.accessToken);
+                  var token = localStorage.getItem("token");
+                  console.log(token);
+                  //window.location.href = '/posts?token=' + token;
+                  window.location.href = '/content?token=' + token;
+
+                  form.append(authorizationHeader);
+                  $("body").append(form);
+                  form.submit();
+              } else {
+                  alert(response.message);
+              }
+          }
+      });
   });
-}); // Closing parenthesis moved to the end of the script block
+});
+
+

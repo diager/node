@@ -2,7 +2,7 @@ require("dotenv").config() //loads environmental variables from the .env file
 
 const express = require("express") //web framework for node.js
 const app = express()
-const mysql = require("mysql2")
+const mysql = require("mysql")
 //const mysql = require('mysql2/promise');
 const bodyParser = require('body-parser'); // middleware for parsing incoming request bodies 
 const bcrypt = require("bcrypt") //hash passwords
@@ -99,18 +99,33 @@ app.get('/register', (req, res) => {
     res.render('register', { error: "" });
 });
 
-app.get('/content', async (req, res) => {
-    
-    const sqlQuery = "SELECT * FROM contentTable"
-    await connection.query(sqlQuery, async (err, result) => {
-        if (err) throw (err)
-        console.log("------> Search Results")
-        console.log(result)
-        
-        res.render('content', { username: "Diana", content: result });
-    })
+app.get('/content', authenticateToken, async (req, res) => {
+    const token = req.query.token
+    if (token){
+        try {
+            const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+            console.log("decoded:", decoded.name);
+            const user = decoded.name;
+            const sqlQuery = "SELECT * FROM contentTable"
 
-})
+            await connection.query(sqlQuery, async (err, result) => {
+                if (err) throw (err)
+                console.log("------> Search Results")
+                console.log(result)
+
+                //res.render('content', { username: "Diana", content: result });
+                res.render('content', { user, content: result });
+            })
+            } catch (error) {
+                res.status(401).send('Invalid token');
+            }
+        } else {
+        res.status(400).send('Token not found');
+    }
+});
+
+
+
 
 app.get('/logout', function (req, res) {
     req.session.destroy();
@@ -120,100 +135,88 @@ app.get('/logout', function (req, res) {
     res.redirect('login')
 })
 
-//post routes
-//register
-app.post("/register", async (req, res) => {
-    const user = req.body.username;
-    const hashedPassword = await bcrypt.hash(req.body.password, 10);
 
-    if (req.body.password === req.body.passwordRepeat) {
-        connection.getConnection(async (err, connection) => {
-            if (err) throw (err)
-
-            const sqlSearch = "SELECT * FROM userTable WHERE user = ?"
-            const search_query = mysql.format(sqlSearch, [user])    //username in db?
-            const sqlInsert = "INSERT INTO userTable VALUES (0,?,?)"
-            const insert_query = mysql.format(sqlInsert, [user, hashedPassword])    //right password?
-
-            await connection.query(search_query, async (err, result) => {
-                if (err) throw (err)
-                console.log("------> Search Results")
-                console.log(result.length)
-                if (result.length != 0) {   //user already exists
-                    connection.release()
-                    console.log("------> User already exists")
-                    res.render('register', { error: "User already exists" })
-                } else {
-                    await connection.query(insert_query, (err, result) => {
-                        connection.release()
-                        if (err) throw (err)
-                        console.log("--------> Created new User")   //console.log(result.insertId)
-                        //let token = jwt.sign({ username: user.username }, secretKey, { expiresIn: '1h' });
-                        //res.status(200).json({ message: 'Login successful' , token: token});
-                        //res.render('content', { username: user })
-                        res.redirect('content')
-                    })
-                }
-            })
-        })
-    } else {
-        console.log("The passwords do not match")
-        res.render('register', { error: "The passwords do not match" })
-    }
-})
-
-// Login route
-app.post('/login', (req, res) => {
+app.post('/login', function (req, res) {
     const { username, password } = req.body;
 
-    //const username = req.body.username;
-    //const user = { name: username };
-    //const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '10000' });
-    //res.json({ accessToken: accessToken });
-
-    // Check if the username exists in the database
-    connection.query(
-        'SELECT * FROM userTable WHERE user = ?',
-        [username],
-        (error, results) => {
-            if (error) {
-                console.error('Error querying the database:', error);
-                res.status(500).json({ error: 'An error occurred during login' });
-            } else if (results.length === 0) {
-                console.log('User does not exist');
-                res.status(401).json({ error: 'Invalid username or password' });
-            } else {
-                // User exists, compare the password
-                const user = results[0];
-
-                bcrypt.compare(password, user.password, (error, passwordMatch) => {
-                    if (error) {
-                        console.error('Error comparing passwords:', error);
-                        res.status(500).json({ error: 'An error occurred during login' });
-                    } else if (passwordMatch) {
-                        // Password matches, authentication successful
-                        // Generate a JWT token with the username and set it to expire in 1 hour
-                        const token = jwt.sign({username}, secretKey, { expiresIn: '1h' });
-
-                    /*                         token = jwt.sign(
-                                                { userId: existingUser.id, email: existingUser.email },
-                                                "secretkeyappearshere",
-                                                { expiresIn: "1h" }
-                                              ); */
-
-                    //console.log("token: ", token)
-                    // Return the token as the response
-                    //console.log('Login successful');
-                    res.status(200).json({ message: 'Login successful', token: token });
-                } else {
-                    // Password does not match
-                    console.log('Invalid password');
-                    res.status(401).json({ error: 'Invalid username or password'});
-                }
-                });
-}
+    // Check if the user exists
+    connection.query('SELECT * FROM userTable WHERE user = ?', [username], function (error, results) {
+        if (error) {
+            console.error('Error executing database query: ' + error.stack);
+            res.json({ success: false, message: 'Ein Fehler ist aufgetreten.' });
+            return;
         }
-);
+
+        if (results.length === 0) {
+            res.json({ success: false, message: 'Benutzername existiert nicht.' });
+            return;
+        }
+
+        const user = results[0];
+
+        // Compare the password with the hashed password
+        bcrypt.compare(password, user.password, function (err, passwordMatch) {
+            if (err) {
+                console.error('Error comparing passwords: ' + err.stack);
+                res.json({ success: false, message: 'Ein Fehler ist aufgetreten.' });
+                return;
+            }
+
+            if (passwordMatch) {
+                const username = req.body.username;
+                const user = { name: username };
+                const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1000000' });
+                //res.json({ success: true }, { accessToken: accessToken });
+                console.log("Access Token " + accessToken)
+                res.status(200).json({ success: true, accessToken: accessToken });
+
+                //res.json({ success: true });
+            } else {
+                res.json({ success: false, message: 'Falsches Passwort.' });
+            }
+        });
+    });
+});
+
+
+
+app.post('/register', function (req, res) {
+    const { username, password } = req.body;
+
+    // Check if the user already exists
+    connection.query('SELECT * FROM userTable WHERE user = ?', [username], function (error, results) {
+        if (error) {
+            console.error('Error executing database query: ' + error.stack);
+            res.json({ success: false, message: 'Ein Fehler ist aufgetreten.' });
+            return;
+        }
+
+        if (results.length > 0) {
+            res.json({ success: false, message: 'Benutzername existiert bereits.' });
+            return;
+        }
+
+        // Hash the password
+        bcrypt.hash(password, 10, function (err, hash) {
+            if (err) {
+                console.error('Error hashing password: ' + err.stack);
+                res.json({ success: false, message: 'Ein Fehler ist aufgetreten.' });
+                return;
+            }
+
+            // Store the user in the database
+            connection.query('INSERT INTO userTable (user, password) VALUES (?, ?)', [username, hash], function (err, results) {
+                if (err) {
+                    console.error('Error executing database query: ' + err.stack);
+                    res.json({ success: false, message: 'Ein Fehler ist aufgetreten.' });
+                    return;
+                }
+
+                //res.json({ success: true });
+                res.status(200).json({ success: true, accessToken: accessToken });
+            });
+        });
+    });
 });
 
 
