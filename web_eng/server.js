@@ -2,7 +2,7 @@ require("dotenv").config() //loads environmental variables from the .env file
 
 const express = require("express") //web framework for node.js
 const app = express()
-const mysql = require("mysql")
+const mysql = require("mysql2")
 //const mysql = require('mysql2/promise');
 const bodyParser = require('body-parser'); // middleware for parsing incoming request bodies 
 const bcrypt = require("bcrypt") //hash passwords
